@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construeix el teu Camí - Aprenentatge Autònom i Competència Digital</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Estilos para las diapositivas */
+        .slide {
+            display: none;
+            padding: 60px;
+            min-height: 100vh;
+        }
+        
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Encabezados */
+        h1 {
+            color: #2c3e50;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #3498db;
+            font-size: 2.2rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin: 25px 0 15px;
+        }
+        
+        h4 {
+            color: #3498db;
+            font-size: 1.2rem;
+            margin: 15px 0 10px;
+        }
+        
+        /* Párrafos y listas */
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        /* Tablas estilo Word */
+        .word-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border: 2px solid #ddd;
+        }
+        
+        .word-table td {
+            border: 1px solid #ddd;
+            padding: 20px;
+            vertical-align: top;
+            text-align: center;
+        }
+        
+        .word-table tr:first-child {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        /* Botones y enlaces */
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Navegación */
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            border-top: 2px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        /* Secciones especiales */
+        .reflexio {
+            background-color: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .test-rapid {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 2px dashed #3498db;
+        }
+        
+        .plantilla {
+            background-color: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #3498db;
+        }
+        
+        /* Contacto */
+        .contacte {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        /* Instrucciones */
+        .instruccions {
+            background-color: #e8f6f3;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        
+        /* Iconos grandes */
+        .icon-large {
+            font-size: 2.5rem;
+            display: block;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        /* Portada especial */
+        #portada {
+            text-align: center;
+            padding-top: 100px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        #portada p {
+            font-size: 1.3rem;
+            color: #666;
+            margin: 10px 0;
+        }
+        
+        #portada .subtitol {
+            font-size: 1.8rem;
+            color: #3498db;
+            margin: 20px 0 40px;
+        }
+        
+        .professor-info {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #3498db;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .word-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Portada -->
+        <div class="slide active" id="portada">
+            <div class="slide-number">1/8</div>
+            <h1>Construeix el teu Camí</h1>
+            <p class="subtitol">Aprenentatge Autònom i Competència Digital</p>
+            <p>Guia interactiva per al RA5 del mòdul d'IPO I</p>
+            
+            <div class="professor-info">
+                <p><strong>Professor:</strong> Diego Izquierdo Perán</p>
+                <p><strong>Àrea:</strong> FOL · IPO I</p>
+                <p><strong>Cicles Formatius de Grau Mitjà i Superior</strong></p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 2: Per què aprendre a aprendre? -->
+        <div class="slide" id="slide2">
+            <div class="slide-number">2/8</div>
+            <h2>Per què aprendre a aprendre?</h2>
+            <p>El aprenentatge autònom és la teva capacitat per gestionar el teu propi aprenentatge al llarg de la vida.</p>
+            
+            <h3>📚 5.1 - Relació amb les competències</h3>
+            <p>L'aprenentatge autònom desenvolupa competències clau com:</p>
+            <ul>
+                <li>Pensament crític i resolució de problemes</li>
+                <li>Competència digital i tecnològica</li>
+                <li>Autogestió i iniciativa personal</li>
+                <li>Adaptabilitat i flexibilitat</li>
+            </ul>
+            
+            <h3>🎯 5.2 - Ocupabilitat</h3>
+            <p>La ocupabilitat és la teva capacitat per trobar, mantenir i progressar en una feina.</p>
+            <p>En un món laboral canviant, qui sap aprendre per si mateix/a té més oportunitats.</p>
+            
+            <div class="reflexio">
+                <h3>💭 Reflexiona...</h3>
+                <p>Quina competència et sembla més important per al teu futur professional?</p>
+                <button class="btn" onclick="alert('Gràcies per compartir la teva opinió! Aquesta reflexió és el primer pas del teu aprenentatge autònom.')">Comparteix la teva opinió</button>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 3: Adaptar-se o quedar-se enrere -->
+        <div class="slide" id="slide3">
+            <div class="slide-number">3/8</div>
+            <h2>Adaptar-se o quedar-se enrere</h2>
+            
+            <h3>🔄 5.3 - Capacitat d'adaptació</h3>
+            <p>Els canvis són constants en el món laboral. La teva capacitat d'adaptar-te determina la teva ocupabilitat.</p>
+            
+            <h3>📈 Els canvis son oportunitats</h3>
+            <p><strong>Sense adaptació:</strong> Resistència als canvis → Menys oportunitats</p>
+            <p><strong>Amb adaptació:</strong> Obert als canvis → Més oportunitats i creixement</p>
+            
+            <div style="height: 10px; background: linear-gradient(90deg, #e74c3c, #2ecc71); border-radius: 5px; margin: 20px 0;"></div>
+            
+            <p><strong>Exemple pràctic:</strong> L'arribada d'una nova tecnologia a la teva feina. Pots:</p>
+            <ul>
+                <li>Oposar-t'hi i quedar-te obsolet/da</li>
+                <li>Aprendre-la i millorar la teva posició</li>
+            </ul>
+        </div>
+        
+        <!-- Diapositiva 4: El teu EPA -->
+        <div class="slide" id="slide4">
+            <div class="slide-number">4/8</div>
+            <h2>📊 El teu EPA</h2>
+            <p><strong>Entorn Personal d'Aprenentatge (EPA)</strong> - El teu centre de control digital</p>
+            
+            <table class="word-table">
+                <tr>
+                    <td>
+                        <div class="icon-large">📚</div>
+                        <h4>Fonts d'informació</h4>
+                        <p>Cursos, blogs, podcasts, YouTube Edu</p>
+                        <a href="https://www.coursera.org" target="_blank" class="btn">Exemple</a>
+                    </td>
+                    <td>
+                        <div class="icon-large">🛠️</div>
+                        <h4>Eines digitals</h4>
+                        <p>Trello, Canva, Google Drive, LinkedIn</p>
+                        <a href="https://trello.com" target="_blank" class="btn">Exemple</a>
+                    </td>
+                    <td>
+                        <div class="icon-large">👥</div>
+                        <h4>Xarxa personal</h4>
+                        <p>Companys, mentors, experts, comunitats</p>
+                        <a href="https://www.linkedin.com" target="_blank" class="btn">Exemple</a>
+                    </td>
+                </tr>
+            </table>
+            
+            <h3>🎨 5.4 i 5.5 - Crea el teu EPA</h3>
+            <p><strong>Passos per crear el teu EPA:</strong></p>
+            <ol>
+                <li>Identifica els teus objectius d'aprenentatge</li>
+                <li>Tria les eines digitals que t'ajudin</li>
+                <li>Selecciona fonts d'informació fiables</li>
+                <li>Construeix la teva xarxa de contactes</li>
+                <li>Organitza-ho tot en un espai accessible</li>
+            </ol>
+        </div>
+        
+        <!-- Diapositiva 5: La teva identitat digital -->
+        <div class="slide" id="slide5">
+            <div class="slide-number">5/8</div>
+            <h2>👤 La teva identitat digital</h2>
+            
+            <h3>🔍 5.6 - Impacte en l'ocupació</h3>
+            <p>La teva identitat digital és tot el que hi ha sobre tu a internet. Els reclutadors la cerquen!</p>
+            
+            <div class="reflexio">
+                <h3>✅ Consells pràctics:</h3>
+                <p>1. <strong>Googleja't</strong> - Descobreix què es veu de tu</p>
+                <p>2. <strong>Netega</strong> - Elimina contingut inapropiat</p>
+                <p>3. <strong>Construeix</strong> - Crea contingut professional</p>
+            </div>
+            
+            <div class="test-rapid">
+                <h3>🧪 Test ràpid: La teva identitat digital</h3>
+                <p><strong>1. Tens el teu perfil de LinkedIn actualitzat?</strong></p>
+                <button class="btn" onclick="alert('Perfecte! Un bon perfil de LinkedIn obre portes.')">Sí</button>
+                <button class="btn" onclick="alert('És un bon moment per actualitzar-lo! Dedica-li una hora aquest cap de setmana.')">No</button>
+                
+                <p style="margin-top: 20px;"><strong>2. Comparteixes contingut professional a les xarxes?</strong></p>
+                <button class="btn" onclick="alert('Molt bé! Això mostra el teu interès pel sector.')">Sí</button>
+                <button class="btn" onclick="alert('Pots començar compartint articles interessants del teu camp.')">No</button>
+                
+                <p style="margin-top: 20px;"><strong>3. Has buscat el teu nom a Google recentment?</strong></p>
+                <button class="btn" onclick="alert('Excel·lent! És important saber què es veu de tu.')">Sí</button>
+                <button class="btn" onclick="alert('Fes-ho aviat! És el teu punt de partida per millorar la teva identitat digital.')">No</button>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 6: Eines i Pla de Desenvolupament -->
+        <div class="slide" id="slide6">
+            <div class="slide-number">6/8</div>
+            <h2>🛠️ Eines i Pla de Desenvolupament</h2>
+            
+            <h3>📈 5.7 i 5.9 - Eines per al teu creixement</h3>
+            <p><strong>Eines gratuïtes per aprendre i organitzar-te:</strong></p>
+            <ul>
+                <li><strong>Trello</strong> - Organització de projectes</li>
+                <li><strong>Canva</strong> - Disseny gràfic professional</li>
+                <li><strong>LinkedIn Learning</strong> - Cursos professionals</li>
+                <li><strong>Google Calendar</strong> - Gestió del temps</li>
+                <li><strong>Notion</strong> - Notes i bases de dades</li>
+            </ul>
+            
+            <div class="plantilla">
+                <h3>🗺️ 5.8 - Pla de Desenvolupament Individual</h3>
+                <p>Crea el teu pla per millorar la teva ocupabilitat:</p>
+                
+                <h4>📝 La meva plantilla:</h4>
+                <p><strong>Objectiu professional (1 any):</strong> [Escriu el teu objectiu]</p>
+                <p><strong>Habilitats a desenvolupar:</strong> [Llista 3 habilitats]</p>
+                <p><strong>Accions concretes:</strong> [Què faràs exactament?]</p>
+                <p><strong>Termini:</strong> [Per a quan?]</p>
+                
+                <button class="btn" onclick="alert('Plantilla preparada! Ara pots començar a omplir-la amb els teus objectius.')">📥 Descarrega la plantilla</button>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 7: CV Digital -->
+        <div class="slide" id="slide7">
+            <div class="slide-number">7/8</div>
+            <h2>💼 CV Digital</h2>
+            
+            <h3>🎨 RA 5.10 - Elabora el teu CV digital</h3>
+            <p>Un CV digital no és un PDF. És una experiència interactiva que mostra qui ets.</p>
+            
+            <table class="word-table">
+                <tr>
+                    <td style="width: 60%; text-align: left;">
+                        <h4>🚀 3 passos bàsics:</h4>
+                        <ol>
+                            <li><strong>Escull la plataforma:</strong> 
+                                <a href="https://www.canva.com/es_es/crear/curriculum-vitae/" target="_blank">Canva</a>, 
+                                <a href="https://es.linkedin.com/pulse/plantillas-de-curriculum-vitae-para-descargar-y-crear-cl%C3%A1udio-in%C3%A1cio-" target="_blank">LinkedIn</a>, 
+                                <a href="https://blocs.xtec.cat/elsportafolisdigitals/2021/06/30/google-sites/" target="_blank">portafoli web</a>, ...
+                            </li>
+                            <li><strong>Estructura el contingut:</strong> Sobre mi, experiència, projectes, contacte, ...</li>
+                            <li><strong>Afegeix el teu EPA i pla de desenvolupament</strong></li>
+                        </ol>
+                    </td>
+                    <td style="width: 40%;">
+                        <h4>🌟 Exemple visual:</h4>
+                        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                            <div style="font-size: 2.5rem; margin-bottom: 10px;">👨‍💻</div>
+                            <h4>El teu nom</h4>
+                            <p>Professional del teu sector</p>
+                            <p><strong>📧</strong> email@exemple.com</p>
+                            <p><strong>🔗</strong> enllaçalportafoli.com</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="https://www.canva.com/create/resumes/" target="_blank" class="btn">Crea el teu CV a Canva</a>
+                <a href="https://www.linkedin.com/" target="_blank" class="btn">Actualitza el teu LinkedIn</a>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 8: Tasca i lliurament -->
+        <div class="slide" id="slide8">
+            <div class="slide-number">8/8</div>
+            <h2>📋 Tasca i lliurament</h2>
+            
+            <div class="instruccions">
+                <h3>🎯 La teva tasca per al portafolis:</h3>
+                <ol>
+                    <li>Crea el teu EPA digital (segons les indicacions)</li>
+                    <li>Dissenya el teu Pla de Desenvolupament Individual</li>
+                    <li>Elabora el teu CV digital (enllaç o arxiu)</li>
+                    <li>Inclou una reflexió sobre el procés</li>
+                    <li>Presenta-ho tot al teu portafolis de l'assignatura</li>
+                </ol>
+            </div>
+            
+            <div style="display: flex; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>📅 Termini i format:</h3>
+                    <p><strong>Data de lliurament:</strong> dimecres 27 de maig de 2026</p>
+                    <p><strong>Format:</strong> Presentació digital o enllaç accessible</p>
+                    <p><strong>Extensió:</strong> Equivalent a 3-4 pàgines d'informació clau</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>📧 Contacte</h3>
+                    <p>Per a dubtes o aclariments:</p>
+                    <p><strong>Diego Izquierdo Perán</strong></p>
+                    <p><strong>Correu:</strong> dizquipe@ins********.cat</p>
+                    <p><strong>Google Classroom:</strong> classroom.google.com</p>
+                </div>
+            </div>
+            
+            <div class="contacte">
+                <h3>🎉 Molt èxit en el teu camí d'aprenentatge autònom!</h3>
+                <p style="font-size: 1.2rem; margin-top: 10px;">Recorda: Aquest és el començament, no el final ✨</p>
+            </div>
+        </div>
+        
+        <!-- Navegación -->
+        <div class="navigation">
+            <button class="btn" id="prevBtn" onclick="prevSlide()">← Anterior</button>
+            <div>
+                <span id="currentSlide">1</span> / 8
+            </div>
+            <button class="btn" id="nextBtn" onclick="nextSlide()">Següent →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+        
+        function showSlide(n) {
+            if (n < 1) n = 1;
+            if (n > totalSlides) n = totalSlides;
+            
+            currentSlide = n;
+            
+            // Ocultar todas las diapositivas
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Mostrar la diapositiva actual
+            document.getElementById(currentSlide === 1 ? 'portada' : `slide${n}`).classList.add('active');
+            
+            // Actualizar indicador
+            document.getElementById('currentSlide').textContent = n;
+            
+            // Actualizar números en cada slide
+            document.querySelectorAll('.slide-number').forEach((el, index) => {
+                el.textContent = `${index + 1}/${totalSlides}`;
+            });
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'Home') showSlide(1);
+            if (e.key === 'End') showSlide(totalSlides);
+        });
+        
+        // Inicializar
+        showSlide(1);
+    </script>
+</body>
+</html>

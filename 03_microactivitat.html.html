@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De l'oferta al conveni: Contrast col·laboratiu</title>
+    <style>
+        /* ESTILOS PRINCIPALES */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background-color: #f5f5f5; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        
+        /* SISTEMA DE DIAPOSITIVAS */
+        .slide { display: none; padding: 60px; min-height: 100vh; }
+        .slide.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* TIPOGRAFÍA */
+        h1 { color: #2c3e50; font-size: 3rem; margin-bottom: 10px; text-align: center; }
+        h2 { color: #3498db; font-size: 2.2rem; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+        h3 { color: #2c3e50; font-size: 1.5rem; margin: 25px 0 15px; }
+        h4 { color: #3498db; font-size: 1.2rem; margin: 15px 0 10px; }
+        p { font-size: 1.1rem; margin-bottom: 15px; line-height: 1.8; }
+        ul, ol { margin-left: 30px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; font-size: 1.1rem; }
+        
+        /* BOTONES */
+        .btn { display: inline-block; background-color: #3498db; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold; margin: 8px; transition: all 0.3s; border: none; cursor: pointer; font-size: 1rem; }
+        .btn:hover { background-color: #2980b9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .btn-material { background-color: #2c3e50; }
+        .btn-material:hover { background-color: #1a252f; }
+        .btn-success { background-color: #27ae60; }
+        .btn-success:hover { background-color: #219653; }
+        
+        /* NAVEGACIÓN */
+        .navigation { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; border-top: 2px solid #3498db; display: flex; justify-content: space-between; z-index: 1000; }
+        .slide-number { position: absolute; top: 20px; right: 30px; background: #3498db; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; }
+        
+        /* COMPONENTES ESPECIALES */
+        .material-section { background-color: #e8f4fc; padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 5px solid #3498db; }
+        .phase-box { background-color: #f9f9f9; padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #ddd; transition: transform 0.3s; }
+        .phase-box:hover { transform: translateX(5px); border-color: #3498db; }
+        .phase-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .phase-icon { background-color: #3498db; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; margin-right: 15px; }
+        .phase-time { font-style: italic; color: #666; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; }
+        
+        /* TABLAS */
+        .contrast-table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 2px solid #ddd; }
+        .contrast-table th { background-color: #2c3e50; color: white; padding: 15px; text-align: left; font-weight: bold; }
+        .contrast-table td { border: 1px solid #ddd; padding: 15px; vertical-align: top; }
+        .contrast-table tr:nth-child(even) { background-color: #f8f9fa; }
+        
+        /* PORTADA */
+        #portada { text-align: center; padding-top: 100px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+        #portada p { font-size: 1.3rem; color: #666; margin: 10px 0; }
+        #portada .subtitol { font-size: 1.8rem; color: #3498db; margin: 20px 0 40px; }
+        .professor-info { margin-top: 50px; padding-top: 30px; border-top: 2px solid #3498db; }
+        
+        /* GRID DE COMPETENCIAS */
+        .criteria-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 25px 0; }
+        .criterion-card { background-color: #f8f9fa; padding: 20px; border-radius: 10px; border-top: 4px solid #3498db; }
+        .criterion-percentage { font-size: 1.5rem; font-weight: bold; color: #3498db; margin-bottom: 10px; }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .slide { padding: 30px 20px; }
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
+            .contrast-table { display: block; overflow-x: auto; }
+            .criteria-grid { grid-template-columns: 1fr; }
+            .navigation { flex-direction: column; align-items: center; gap: 10px; }
+        }
+        
+        /* MODAL PARA MATERIALES */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); }
+        .modal-content { background-color: white; margin: 5% auto; padding: 20px; border-radius: 10px; width: 90%; max-width: 1000px; max-height: 85vh; overflow-y: auto; }
+        .close-modal { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: #000; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ===== PORTADA ===== -->
+        <div class="slide active" id="portada">
+            <div class="slide-number">1/8</div>
+            <h1>De l'oferta al conveni</h1>
+            <p class="subtitol">Contrast col·laboratiu de condicions laborals</p>
+            <p>Microactivitat digital per al RA3 del mòdul d'IPO I</p>
+            
+            <div class="professor-info">
+                <p><strong>Professor:</strong> Diego Izquierdo Perán</p>
+                <p><strong>Àrea:</strong> FOL · IPO I · Electricitat i Electrònica</p>
+                <p><strong>Cicles Formatius de Grau Mitjà i Superior</strong></p>
+                <p><strong>Data d'activitat:</strong> 22 de gener de 2026</p>
+            </div>
+            
+            <div style="margin-top: 50px;">
+                <button class="btn" onclick="nextSlide()">Començar l'activitat →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 2: DESCRIPCIÓ I MATERIALS ===== -->
+        <div class="slide" id="slide2">
+            <div class="slide-number">2/8</div>
+            <h2>📋 Descripció de la Microactivitat</h2>
+            
+            <p>Aquesta activitat us posarà en la pell d'un consultor laboral. Treballareu en grup per analitzar i contrastar una oferta de treball simulada amb el conveni col·lectiu del sector d'Electricitat i Electrònica.</p>
+            
+            <p>L'objectiu és prendre decisions informades sobre les condicions laborals, practicant tant les vostres competències digitals com les de negociació i anàlisi crítica.</p>
+            
+            <div class="material-section">
+                <h3>🔗 Materials Necessaris</h3>
+                <p>Fes clic per obrir els materials d'estudi:</p>
+                
+                <div style="margin: 20px 0; text-align: center;">
+                    <button class="btn btn-material" onclick="openMaterial('oferta_treball')">
+                        📄 Oferta de Treball
+                    </button>
+                    
+                    <button class="btn btn-material" onclick="openMaterial('conveni_colectiu')">
+                        📑 Extracte del Conveni
+                    </button>
+                    
+                    <a href="https://www.canva.com/design/DAG__LcUQVo/F2XaFOjjlrBU5Ygva1239g/view" 
+                       target="_blank" class="btn btn-success">
+                        🎨 Plantilla Canva Docs
+                    </a>
+                </div>
+                
+                <p><strong>Instruccions:</strong></p>
+                <ul>
+                    <li>Primer consulta l'Oferta de Treball i l'Extracte del Conveni</li>
+                    <li>Després accedeix a la Plantilla Canva Docs per començar el treball</li>
+                    <li>Pots obrir els materials en pestanyes separades i anar comparant</li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn" onclick="nextSlide()">Continuar amb Context i Objectius →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 3: CONTEXT I OBJECTIUS ===== -->
+        <div class="slide" id="slide3">
+            <div class="slide-number">3/8</div>
+            <h2>🎯 Context i Objectius</h2>
+            
+            <h3>📚 Contextualització</h3>
+            <ul>
+                <li><strong>Assignatura i Mòdul:</strong> Iniciativa a la Projecció Ocupacional I (IPO I), integrada a FOL</li>
+                <li><strong>Cicle Formatiu:</strong> Cicle Formatiu de Grau Mitjà o Superior del sector d'<strong>Electricitat i Electrònica (EIE)</strong></li>
+                <li><strong>Resultat d'Aprenentatge (RA) Treballat:</strong> <strong>RA3</strong> - "Analitza les seves condicions laborals com a persona treballadora per compte d'altri..."</li>
+                <li><strong>Prerequisits:</strong> Conceptes bàsics de relació laboral i funció dels convenis col·lectius</li>
+            </ul>
+            
+            <h3>🎯 Objectius d'Aprenentatge</h3>
+            <ul>
+                <li>Identificar i extraure les condicions laborals clau (salari, jornada, vacances, etc.) d'una oferta de treball simulada</li>
+                <li>Localitzar i interpretar la normativa aplicable en un extracte del conveni col·lectiu estatal del sector</li>
+                <li>Contrastar de manera crítica, en grup, les condicions de l'oferta amb les del conveni</li>
+                <li>Elaborar col·laborativament un informe estructurat (taula de contrast) utilitzant una eina digital</li>
+                <li>Practicar el debat, la negociació i la presa de decisions consensuada en un entorn digital</li>
+            </ul>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn" onclick="prevSlide()">← Tornar</button>
+                <button class="btn" onclick="nextSlide()">Continuar →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 4: COMPETÈNCIES I EINES ===== -->
+        <div class="slide" id="slide4">
+            <div class="slide-number">4/8</div>
+            <h2>🛠️ Competències i Eina Digital</h2>
+            
+            <h3>🌟 Competències Clau Treballades</h3>
+            <div class="criteria-grid">
+                <div class="criterion-card">
+                    <div class="criterion-percentage">💻</div>
+                    <h4>Competència Digital</h4>
+                    <p>Ús avançat d'una eina de col·laboració en línia (Canva Docs) per a la creació de contingut complex</p>
+                </div>
+                
+                <div class="criterion-card">
+                    <div class="criterion-percentage">🤝</div>
+                    <h4>Competència Social i Ciutadana</h4>
+                    <p>Treball en equip, diàleg assenyat i defensa argumentada d'una postura</p>
+                </div>
+                
+                <div class="criterion-card">
+                    <div class="criterion-percentage">🔍</div>
+                    <h4>Aprenentatge Autònom</h4>
+                    <p>Recerca, anàlisi i síntesi d'informació jurídic-laboral</p>
+                </div>
+                
+                <div class="criterion-card">
+                    <div class="criterion-percentage">🚀</div>
+                    <h4>Sentit d'Iniciativa</h4>
+                    <p>Presa de decisions i avaluació de conseqüències en un context laboral simulat</p>
+                </div>
+            </div>
+            
+            <h3>🛠️ Eina Digital Seleccionada</h3>
+            <div class="phase-box">
+                <h4>Canva Docs</h4>
+                <p><strong>Enllaç:</strong> <a href="https://www.canva.com/design/DAG__LcUQVo/F2XaFOjjlrBU5Ygva1239g/view" target="_blank">Plantilla compartida</a></p>
+                <p><strong>Raó de l'elecció:</strong> Canva Docs permet crear documents visuals i ben estructurats que faciliten la comparació side-by-side (taules). És ideal per a una activitat analítica com aquesta. La seva interfície intuïtiva, les possibilitats de format i el treball síncron o asíncron en temps real la converteixen en l'eina òptima per aconseguir un producte final clar, professional i col·laboratiu.</p>
+            </div>
+            
+            <h3>⏱️ Durada i Materials</h3>
+            <ul>
+                <li><strong>Durada total estimada:</strong> 60 minuts (una sessió completa)</li>
+                <li><strong>Materials proporcionats:</strong> Oferta de treball, extracte del conveni i plantilla Canva Docs</li>
+            </ul>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn" onclick="prevSlide()">← Tornar</button>
+                <button class="btn" onclick="nextSlide()">Continuar →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 5: FASES 1-2 ===== -->
+        <div class="slide" id="slide5">
+            <div class="slide-number">5/8</div>
+            <h2>📝 Procediment - Fases de l'Activitat</h2>
+            
+            <div class="phase-box">
+                <div class="phase-header">
+                    <div class="phase-icon">1</div>
+                    <div>
+                        <h3>Anàlisi Individual</h3>
+                        <p>Cada membre del grup tria 2 condicions laborals diferents</p>
+                    </div>
+                </div>
+                <p>Cada membre del grup tria <strong>2 condicions laborals diferents</strong> de l'oferta de treball (ex: salari, jornada, vacances, període de prova) i cerca <strong>com es regula exactament</strong> en el conveni col·lectiu.</p>
+                <p>Prepara les teves notes per compartir-les amb el grup.</p>
+                <div class="phase-time">⏰ <strong>Durada:</strong> 5-10 minuts</div>
+            </div>
+            
+            <div class="phase-box">
+                <div class="phase-header">
+                    <div class="phase-icon">2</div>
+                    <div>
+                        <h3>Ompliment Col·laboratiu</h3>
+                        <p>Accediu a la plantilla compartida de Canva Docs</p>
+                    </div>
+                </div>
+                <p>Ompliu junts la <strong>TAULA DE CONTRAST</strong>. Per a cada condició analitzada, empleneu les quatre columnes:</p>
+                <ul>
+                    <li><strong>Condició:</strong> Què analitzem? (ex: Salari brut anual)</li>
+                    <li><strong>Oferta de Treball:</strong> Què diu exactament el text de l'oferta?</li>
+                    <li><strong>Conveni Col·lectiu:</strong> Què estableix el conveni?</li>
+                    <li><strong>Anàlisi i Conseqüències:</strong> Hi ha concordància? (Sí/No/Amb matisos). Riscs, drets o possibilitats de negociació</li>
+                </ul>
+                
+                <div class="phase-time">⏰ <strong>Durada:</strong> 10-20 minuts</div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn" onclick="prevSlide()">← Tornar</button>
+                <button class="btn" onclick="nextSlide()">Continuar →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 6: FASES 3-4 ===== -->
+        <div class="slide" id="slide6">
+            <div class="slide-number">6/8</div>
+            <h2>💬 Conclusió i Lliurament</h2>
+            
+            <div class="phase-box">
+                <div class="phase-header">
+                    <div class="phase-icon">3</div>
+                    <div>
+                        <h3>Conclusió Consensuada</h3>
+                        <p>Redacteu una conclusió grupal</p>
+                    </div>
+                </div>
+                <p>Al peu de la taula, redacteu <strong>UNA CONCLUSIÓ GRUPAL</strong> que respongui:</p>
+                <div style="background-color: #f0f8ff; padding: 20px; border-radius: 10px; margin: 15px 0; font-style: italic; border-left: 4px solid #3498db;">
+                    <p>"Vist el contrast, aquesta oferta, en conjunt, (és acceptable / requereix negociació / presenta incompliments greus). El principal risc o oportunitat que el nostre grup identifica és..."</p>
+                </div>
+                <p>Assegureu-vos que tots els membres del grup estan d'acord amb la redacció final.</p>
+                <div class="phase-time">⏰ <strong>Durada:</strong> 15 minuts</div>
+            </div>
+            
+            <div class="phase-box">
+                <div class="phase-header">
+                    <div class="phase-icon">4</div>
+                    <div>
+                        <h3>Revisió i Tancament</h3>
+                        <p>Reviseu i envieu el treball</p>
+                    </div>
+                </div>
+                <p>Reviseu el document complet assegurant-vos que:</p>
+                <ul>
+                    <li>La taula està completa i ben organitzada</li>
+                    <li>La conclusió és clara i argumentada</li>
+                    <li>Les fonts estan citades correctament</li>
+                    <li>El document està visualment net i professional</li>
+                </ul>
+                <p>Envieu l'<strong>enllaç de visualització</strong> del document Canva al professor.</p>
+                <div class="phase-time">⏰ <strong>Durada:</strong> 15 minuts</div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn" onclick="prevSlide()">← Tornar</button>
+                <button class="btn" onclick="nextSlide()">Continuar →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 7: PRODUCTE FINAL ===== -->
+        <div class="slide" id="slide7">
+            <div class="slide-number">7/8</div>
+            <h2>✅ Producte Final i Avaluació</h2>
+            
+            <h3>📊 Producte Final Esperat</h3>
+            <p>El vostre treball es considerarà complet quan el document Canva compartit inclogui:</p>
+            
+            <div class="phase-box">
+                <h4>📋 Taula de Contrast (Obligatòria)</h4>
+                <ul>
+                    <li>Mínim <strong>4-6 condicions laborals</strong> analitzades en profunditat</li>
+                    <li>Cada fila completada amb les 4 columnes requerides</li>
+                    <li>Anàlisi crític amb identificació clara de concordàncies/discrepàncies</li>
+                </ul>
+            </div>
+            
+            <div class="phase-box">
+                <h4>💡 Conclusió Grupal (Obligatòria)</h4>
+                <ul>
+                    <li>Redacció consensuada de 3-4 línies</li>
+                    <li>Valoració global de l'acceptabilitat de l'oferta</li>
+                    <li>Identificació del principal risc o oportunitat detectat</li>
+                </ul>
+            </div>
+            
+            <h3>📋 Criteris d'Avaluació</h3>
+            <div class="criteria-grid">
+                <div class="criterion-card">
+                    <div class="criterion-percentage">40%</div>
+                    <h4>Rigor en el contrast</h4>
+                    <p>Precisa identificació de les condicions i la seva regulació al conveni</p>
+                </div>
+                
+                <div class="criterion-card">
+                    <div class="criterion-percentage">30%</div>
+                    <h4>Qualitat de l'anàlisi</h4>
+                    <p>Profunditat en la identificació de riscos, oportunitats i conseqüències</p>
+                </div>
+                
+                <div class="criterion-card">
+                    <div class="criterion-percentage">20%</div>
+                    <h4>Col·laboració i treball en equip</h4>
+                    <p>Participació equilibrada i consens en les decisions</p>
+                </div>
+                
+                <div class="criterion-card">
+                    <div class="criterion-percentage">10%</div>
+                    <h4>Presentació i claredat</h4>
+                    <p>Document ben estructurat, net i visualment atractiu</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn" onclick="prevSlide()">← Tornar</button>
+                <button class="btn" onclick="nextSlide()">Continuar →</button>
+            </div>
+        </div>
+        
+        <!-- ===== DIAPOSITIVA 8: FINAL ===== -->
+        <div class="slide" id="slide8">
+            <div class="slide-number">8/8</div>
+            <h2>🎉 Activitat Completada</h2>
+            
+            <div style="background-color: #f8f9fa; padding: 30px; border-radius: 15px; margin: 30px 0;">
+                <h3>📞 Contacte amb el professor</h3>
+                <p><strong>Diego Izquierdo Perán</strong></p>
+                <p>📚 <strong>Plataforma principal:</strong> <a href="https://classroom.google.com" target="_blank">Google Classroom</a></p>
+                <p>⏰ <strong>Tutories:</strong> Dimarts i Dijous de 16:00 a 17:30 h</p>
+                <p>📅 <strong>Data límit de lliurament:</strong> Dimecres 27 de maig de 2026</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #e8f4fc 0%, #d6eaf8 100%); border-radius: 15px;">
+                <h3>🏁 Activitat finalitzada!</h3>
+                <p style="font-size: 1.2rem; margin-top: 10px;">Gràcies per la vostra participació i bon treball en equip 👏</p>
+                
+                <div style="margin: 25px 0; padding: 20px; background: #fff3cd; border-radius: 10px;">
+                    <p style="font-style: italic; color: #856404;">
+                        <strong>📍 Recordeu:</strong> Aquesta és una simulació amb finalitats didàctiques. En la vida professional, sempre cal consultar amb experts en dret laboral.
+                    </p>
+                </div>
+                
+                <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">
+                    Activitat dissenyada per Diego Izquierdo Perán per al mòdul de Competència Digital Docent (Nivell B2)
+                </p>
+                
+                <button class="btn" onclick="showSlide(1)" style="margin-top: 20px;">⟲ Tornar a l'inici</button>
+            </div>
+        </div>
+        
+        <!-- NAVEGACIÓ INFERIOR -->
+        <div class="navigation">
+            <button class="btn" id="prevBtn" onclick="prevSlide()">← Anterior</button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn" onclick="openMaterial('oferta_treball')">📄 Oferta</button>
+                <button class="btn" onclick="openMaterial('conveni_colectiu')">📑 Conveni</button>
+                <button class="btn btn-success" onclick="window.open('https://www.canva.com/design/DAG__LcUQVo/F2XaFOjjlrBU5Ygva1239g/view', '_blank')">🎨 Canva</button>
+            </div>
+            <button class="btn" id="nextBtn" onclick="nextSlide()">Següent →</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL PARA MATERIALES ===== -->
+    <div id="materialModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- ===== MATERIALES EMBEBIDOS (OCULTOS) ===== -->
+    <div id="oferta_treball" style="display: none;">
+        <!DOCTYPE html>
+        <html lang="ca">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Oferta de Treball</title><style>body{font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px}.header{background:#2c3e50;color:white;padding:20px;border-radius:10px;text-align:center}.section{background:#f8f9fa;padding:15px;margin:20px 0;border-radius:5px;border-left:4px solid #3498db}.highlight{background:#fff3cd;padding:10px;border-radius:5px;margin:10px 0}table{width:100%;border-collapse:collapse;margin:15px 0}th,td{border:1px solid #ddd;padding:10px;text-align:left}th{background:#2c3e50;color:white}</style></head>
+        <body>
+            <div class="header">
+                <h1>OFERTA DE TREBALL</h1>
+                <h2>Electrosolutions Catalunya, S.L.</h2>
+                <p>Empresa del sector d'instal·lacions elèctriques</p>
+            </div>
+            <div class="section"><h3>📋 DESCRIPCIÓ DEL LLOC DE TREBALL</h3><p><strong>Càrrec:</strong> Tècnic/a d'instal·lacions elèctriques</p><p><strong>Àrea:</strong> Instal·lacions industrials</p><p><strong>Ubicació:</strong> Barcelona i rodalia</p><p><strong>Tipus de contracte:</strong> Indefinit a temps complet</p></div>
+            <div class="section"><h3>💰 CONDICIONS ECONÒMIQUES</h3><table><tr><th>Concepte</th><th>Detall</th></tr><tr><td><strong>Salari brut anual</strong></td><td>21.000 € en 14 pagues (paga extra juny i desembre)</td></tr><tr><td><strong>Complement de transport</strong></td><td>50 €/mes</td></tr><tr><td><strong>Dietes</strong></td><td>10 €/dia quan hi ha desplaçament fora de la província</td></tr></table></div>
+            <div class="section"><h3>⏰ JORNADA I HORARI</h3><ul><li><strong>Jornada setmanal:</strong> 40 hores</li><li><strong>Horari:</strong> Dilluns a Divendres de 8:00 a 17:00 (1 hora per dinar)</li><li><strong>Hores extres:</strong> Es podran requerir puntualment amb compensació econòmica</li></ul></div>
+            <div class="section"><h3>📅 PERÍODE DE PROVA I VACANCES</h3><div class="highlight"><p><strong>Període de prova:</strong> 4 mesos</p><p><strong>Dies de vacances anuals:</strong> 22 dies laborables</p><p><strong>Calendari de vacances:</strong> A concertar amb la direcció, prioritat període estiu</p></div></div>
+            <div class="section"><h3>🎯 REQUISITS I FORMACIÓ</h3><ul><li>Títol de Grau Mitjà en Instal·lacions Elèctriques i Automàtiques o similar</li><li>Carnet de conduir B i vehicle propi</li><li>Experiència mínima de 2 anys en instal·lacions industrials</li><li>Formació en prevenció de riscos laborals (es valorarà certificat)</li></ul></div>
+            <div class="section"><h3>📞 PROCÉS DE SELECCIÓ</h3><p>Els interessats/des han d'enviar CV a: <strong>rrhh@electrosolutions.cat</strong></p><p><strong>Termini de presentació:</strong> Fins al 15 de febrer de 2026</p><p><strong>Data d'inici prevista:</strong> 1 de març de 2026</p></div>
+            <div style="text-align:center;margin-top:30px;padding:15px;background:#e8f4fc;border-radius:5px"><p><strong>Electrosolutions Catalunya, S.L.</strong></p><p>C/ Indústria, 45 - 08025 Barcelona</p><p>Tel: 934 123 456 | www.electrosolutions.cat</p><p><em>Document simulat per a fins didàctics - Activitat IPO I</em></p></div>
+        </body>
+        </html>
+    </div>
+
+    <div id="conveni_colectiu" style="display: none;">
+        <!DOCTYPE html>
+        <html lang="ca">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Conveni Col·lectiu</title><style>body{font-family:Arial,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px}.header{background:#27ae60;color:white;padding:20px;border-radius:10px;text-align:center}.article{background:#f8f9fa;padding:15px;margin:15px 0;border-radius:5px;border-left:4px solid #27ae60}.important{background:#ffeaa7;padding:15px;border-radius:5px;margin:20px 0}h3{color:#27ae60;margin-top:25px}table{width:100%;border-collapse:collapse;margin:15px 0}th,td{border:1px solid #ddd;padding:10px;text-align:left}th{background:#27ae60;color:white}.article-number{font-weight:bold;color:#2c3e50}</style></head>
+        <body>
+            <div class="header"><h1>EXTRACTE DEL CONVENI COL·LECTIU</h1><h2>Sector d'Instal·lacions Elèctriques i de Telecomunicacions</h2><p>Conveni Estatal - Vigència: 2024-2026</p></div>
+            <div class="important"><h3>⚠️ INFORMACIÓ IMPORTANT</h3><p>Aquest document és un extracte simplificat amb finalitats didàctiques. Per a consultes oficials, cal accedir al text complet del conveni publicat al BOE.</p></div>
+            <div class="article"><h3><span class="article-number">Art. 12</span> - JORNADA DE TREBALL</h3><ul><li><strong>Jornada anual:</strong> 1.780 hores efectives de treball</li><li><strong>Distribució:</strong> La jornada ordinària no podrà excedir les 9 hores diàries</li><li><strong>Descans setmanal:</strong> Mínim 1,5 dies ininterromputs</li><li><strong>Flexibilitat horària:</strong> Es podrà establir jornada irregular dins dels límits legals</li></ul></div>
+            <div class="article"><h3><span class="article-number">Art. 18</span> - HORES EXTRAORDINÀRIES</h3><ul><li><strong>Límit anual:</strong> Màxim 80 hores per any natural</li><li><strong>Retribució:</strong> Hora extra es pagarà amb un increment del 75% sobre el salari hora ordinari</li><li><strong>Compensació:</strong> Es podrà compensar amb descans dins dels 4 mesos següents</li><li><strong>Voluntarietat:</strong> Les hores extres són voluntàries, excepte cas de força major</li></ul></div>
+            <div class="article"><h3><span class="article-number">Art. 22</span> - SALARIS</h3><table><tr><th>Categoria Professional</th><th>Salari Brut Anual (14 pagues)</th><th>Paga Extra</th></tr><tr><td>Tècnic/a Instal·lacions (Grup II)</td><td>20.500 €</td><td>Juny i Desembre</td></tr><tr><td>Oficial/a de Primera (Grup III)</td><td>19.800 €</td><td>Juny i Desembre</td></tr><tr><td>Ajudant (Grup IV)</td><td>18.200 €</td><td>Juny i Desembre</td></tr></table><p><strong>Plus de transport:</strong> 45 €/mes quan el centre de treball estigui a més de 2 km de la residència</p></div>
+            <div class="article"><h3><span class="article-number">Art. 25</span> - PERÍODE DE PROVA</h3><ul><li><strong>Durada màxima:</strong> 2 mesos per a treballadors amb títol de formació professional</li><li><strong>Comunicació:</strong> El contracte ha d'especificar per escrit la durada del període de prova</li><li><strong>Extinció:</strong> Durant el període de prova, qualsevol de les parts pot rescindir el contracte sense preavís ni indemnització</li></ul></div>
+            <div class="article"><h3><span class="article-number">Art. 29</span> - VACANCES</h3><ul><li><strong>Duració mínima:</strong> 30 dies naturals per any (22-23 dies laborables)</li><li><strong>Període d'execució:</strong> Entre l'1 de maig i el 31 d'octubre de cada any</li><li><strong>Concedir vacances:</strong> L'empresa ha de comunicar les dates amb 2 mesos d'antelació</li><li><strong>Vacances no disfrutades:</strong> Es poden compensar econòmicament només en cas d'extinció del contracte</li></ul></div>
+            <div class="article"><h3><span class="article-number">Art. 32</span> - FORMACIÓ PROFESSIONAL</h3><ul><li><strong>Drets a formació:</strong> Els treballadors tenen dret a 20 hores anuals de formació retribuïda</li><li><strong>Permisos per exàmens:</strong> Dret a permís retribuït per proves oficials</li><li><strong>Reconeixement:</strong> La formació realitzada s'ha de reflectir al certificat d'empresa</li></ul></div>
+            <div class="article"><h3><span class="article-number">Art. 35</span> - PREVENCIÓ DE RISCOS LABORALS</h3><ul><li><strong>Formació obligatòria:</strong> Tots els treballadors han de rebre formació específica en PRL</li><li><strong>Equips de protecció:</strong> L'empresa ha de proporcionar EPIs adequats sense cost per al treballador</li><li><strong>Vigilància de la salut:</strong> Reconèixements mèdics periòdics obligatoris</li></ul></div>
+            <div style="text-align:center;margin-top:30px;padding:15px;background:#d5f4e6;border-radius:5px"><p><strong>CONVENI COL·LECTIU ESTATAL</strong></p><p>Sector d'Instal·lacions Elèctriques i de Telecomunicacions</p><p><strong>Vigència:</strong> 1 de gener de 2024 - 31 de desembre de 2026</p><p><em>Document simulat per a fins didàctics - Activitat IPO I</em></p></div>
+        </body>
+        </html>
+    </div>
+
+    <script>
+        // ===== SISTEMA DE NAVEGACIÓN DE DIAPOSITIVAS =====
+        let currentSlide = 1;
+        const totalSlides = 8;
+        
+        function showSlide(n) {
+            if (n < 1) n = 1;
+            if (n > totalSlides) n = totalSlides;
+            
+            currentSlide = n;
+            
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            const slideId = currentSlide === 1 ? 'portada' : `slide${n}`;
+            document.getElementById(slideId).classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = n;
+            
+            document.querySelectorAll('.slide-number').forEach((el, index) => {
+                el.textContent = `${index + 1}/${totalSlides}`;
+            });
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'Home') showSlide(1);
+            if (e.key === 'End') showSlide(totalSlides);
+        });
+        
+        // ===== SISTEMA DE MODALES PARA MATERIALES =====
+        function openMaterial(materialId) {
+            const modal = document.getElementById('materialModal');
+            const modalContent = document.getElementById('modalContent');
+            const materialContent = document.getElementById(materialId);
+            
+            if (materialContent) {
+                modalContent.innerHTML = materialContent.innerHTML;
+                modal.style.display = 'block';
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('materialModal').style.display = 'none';
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('materialModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        
+        // ===== INICIALIZACIÓN =====
+        showSlide(1);
+    </script>
+</body>
+</html>

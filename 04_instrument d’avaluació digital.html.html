@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulari d'Avaluació - Microactivitat "De l'oferta al conveni"</title>
+    
+    <!-- Incloure jsPDF per a generar PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 30px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        
+        /* CAPÇALERA */
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        /* SECCIONS */
+        .section {
+            padding: 30px 40px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+        
+        /* PREGUNTES */
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e1e8ed;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question h3 {
+            color: #3498db;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .question p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        /* INPUTS */
+        input[type="text"], input[type="url"], textarea, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+            margin-top: 8px;
+        }
+        
+        input[type="text"]:focus, input[type="url"]:focus, textarea:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        /* ESCALES */
+        .scale-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .scale-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .scale-item:hover {
+            background: #e9ecef;
+            border-color: #ced4da;
+        }
+        
+        .scale-item.selected {
+            background: #e8f4fc;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .scale-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .level-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            color: white;
+        }
+        
+        .level-1 { background: #e74c3c; }
+        .level-2 { background: #f39c12; }
+        .level-3 { background: #2ecc71; }
+        .level-4 { background: #3498db; }
+        
+        .level-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .level-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+            margin-left: 44px;
+        }
+        
+        /* NOVES ÀREES DE RESULTATS */
+        .results-container {
+            display: none;
+            padding: 30px 40px;
+            background: linear-gradient(135deg, #e8f4fc 0%, #d6eaf8 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .results-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-icon {
+            font-size: 32px;
+            margin-right: 15px;
+        }
+        
+        .results-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .score-display {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .score-number {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .score-text {
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .json-output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        /* NOUS BOTONS */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
+        }
+        
+        .btn-pdf {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(192, 57, 43, 0.2);
+        }
+        
+        .btn-json {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+            color: white;
+        }
+        
+        .btn-json:hover {
+            background: linear-gradient(135deg, #d68910 0%, #b9770e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(214, 137, 16, 0.2);
+        }
+        
+        .btn-send {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+        
+        .btn-send:hover {
+            background: linear-gradient(135deg, #219653 0%, #27ae60 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2);
+        }
+        
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+        
+        /* BOTONS INFERIORS */
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* FIL CONDUCTOR */
+        .fil-conductor {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 40px 0;
+            border-left: 4px solid #ffc107;
+            font-size: 14px;
+        }
+        
+        .fil-conductor strong {
+            color: #856404;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .header, .section { padding: 20px; }
+            .section-title { font-size: 20px; }
+            .scale-container { flex-direction: column; }
+            .scale-item { min-width: 100%; }
+            .buttons, .action-buttons { flex-direction: column; gap: 15px; }
+            .btn, .action-btn { width: 100%; min-width: 100%; }
+            .fil-conductor { margin: 20px 20px 0; }
+        }
+        
+        /* TAGS */
+        .tag {
+            display: inline-block;
+            background: #e8f4fc;
+            color: #3498db;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        /* ESTAT D'ENVIAMENT */
+        .sending-status {
+            display: none;
+            padding: 20px;
+            background: #d4edda;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border-left: 5px solid #28a745;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- CAPÇALERA -->
+        <div class="header">
+            <h1>📋 Formulari d'Avaluació Digital</h1>
+            <p>Avaluació de la microactivitat "De l'oferta al conveni" - FOL IPO I</p>
+            <p style="margin-top: 15px; font-size: 14px; opacity: 0.8;">
+                Aquest instrument avalua el treball col·laboratiu digital i connecta amb el fil conductor del curs 
+                (Àrea 2 → Àrea 3 → Àrea 4)
+            </p>
+        </div>
+        
+        <!-- FIL CONDUCTOR -->
+        <div class="fil-conductor">
+            <strong>🎯 FIL CONDUCTOR DEL CURS:</strong> 
+            Àrea 2 (Identitat digital) → Àrea 3 (Anàlisi laboral) → Àrea 4 (Avaluació amb feedback)
+        </div>
+        
+        <!-- SECCIÓ 1: DADES I EVIDÈNCIA -->
+        <div class="section">
+            <div class="section-title">
+                <i>📝</i> Dades de l'Estudiant i Evidència Digital
+            </div>
+            
+            <div class="question">
+                <h3 class="required">1. Nom i cognoms de l'estudiant</h3>
+                <input type="text" id="nom" placeholder="Escriu el teu nom complet" required>
+            </div>
+            
+            <div class="question">
+                <h3 class="required">2. Grup de treball</h3>
+                <input type="text" id="grup" placeholder="Ex: Grup A, Grup B..." required>
+            </div>
+            
+            <div class="question">
+                <h3 class="required">3. Enllaç a la taula de contrast a Canva Docs</h3>
+                <p>🔗 <em>Aquest enllaç és l'evidència digital del teu producte i mostra la teva competència per crear contingut professional</em></p>
+                <input type="url" id="enllac" placeholder="https://www.canva.com/design/..." required>
+            </div>
+            
+            <div class="question">
+                <h3>4. Autovaloració de l'ús d'eines digitals</h3>
+                <p>Valora com t'has sentit utilitzant les eines digitals en aquesta activitat:</p>
+                <select id="autovaloracio">
+                    <option value="">-- Selecciona --</option>
+                    <option value="1">1 - Molt difícil</option>
+                    <option value="2">2 - Una mica difícil</option>
+                    <option value="3">3 - Neutral</option>
+                    <option value="4">4 - Fàcil</option>
+                    <option value="5">5 - Molt fàcil i útil</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- SECCIÓ 2: RÚBRICA -->
+        <div class="section">
+            <div class="section-title">
+                <i>📊</i> Rúbrica d'Avaluació
+            </div>
+            <p style="margin-bottom: 20px; color: #666;">
+                <strong>Instruccions:</strong> Per a cada criteri, selecciona el nivell que millor descrigui el treball de l'estudiant/grup.
+            </p>
+            
+            <!-- CRITERI 1 -->
+            <div class="question">
+                <h3 class="required">Criteri 1: Anàlisi i contrast de condicions laborals</h3>
+                <div class="scale-container" id="criteri1">
+                    <div class="scale-item" data-value="1">
+                        <div class="scale-header">
+                            <div class="level-icon level-1">1</div>
+                            <div class="level-title">No assolit</div>
+                        </div>
+                        <div class="level-desc">S'identifiquen menys de 2 condicions o el contrast és incorrecte</div>
+                    </div>
+                    <div class="scale-item" data-value="2">
+                        <div class="scale-header">
+                            <div class="level-icon level-2">2</div>
+                            <div class="level-title">En procés</div>
+                        </div>
+                        <div class="level-desc">S'identifiquen 2-3 condicions però el contrast és superficial</div>
+                    </div>
+                    <div class="scale-item" data-value="3">
+                        <div class="scale-header">
+                            <div class="level-icon level-3">3</div>
+                            <div class="level-title">Assolit</div>
+                        </div>
+                        <div class="level-desc">S'analitzen 4-5 condicions amb contrast clar i precís</div>
+                    </div>
+                    <div class="scale-item" data-value="4">
+                        <div class="scale-header">
+                            <div class="level-icon level-4">4</div>
+                            <div class="level-title">Excel·lent</div>
+                        </div>
+                        <div class="level-desc">S'analitzen 5+ condicions amb contrast detallat i exemplificat</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRITERI 2 -->
+            <div class="question">
+                <h3 class="required">Criteri 2: Rigor en la identificació normativa</h3>
+                <div class="scale-container" id="criteri2">
+                    <div class="scale-item" data-value="1">
+                        <div class="scale-header">
+                            <div class="level-icon level-1">1</div>
+                            <div class="level-title">No assolit</div>
+                        </div>
+                        <div class="level-desc">No es citen articles del conveni o es fan errors greus</div>
+                    </div>
+                    <div class="scale-item" data-value="2">
+                        <div class="scale-header">
+                            <div class="level-icon level-2">2</div>
+                            <div class="level-title">En procés</div>
+                        </div>
+                        <div class="level-desc">Es citen articles però amb inexactituds o interpretació limitada</div>
+                    </div>
+                    <div class="scale-item" data-value="3">
+                        <div class="scale-header">
+                            <div class="level-icon level-3">3</div>
+                            <div class="level-title">Assolit</div>
+                        </div>
+                        <div class="level-desc">Es citen correctament articles rellevants amb interpretació adequada</div>
+                    </div>
+                    <div class="scale-item" data-value="4">
+                        <div class="scale-header">
+                            <div class="level-icon level-4">4</div>
+                            <div class="level-title">Excel·lent</div>
+                        </div>
+                        <div class="level-desc">Es citen amb precisió articles específics i es relacionen amb jurisprudència</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRITERI 3 -->
+            <div class="question">
+                <h3 class="required">Criteri 3: Col·laboració i treball en equip</h3>
+                <div class="scale-container" id="criteri3">
+                    <div class="scale-item" data-value="1">
+                        <div class="scale-header">
+                            <div class="level-icon level-1">1</div>
+                            <div class="level-title">No assolit</div>
+                        </div>
+                        <div class="level-desc">Treball descoordinat, participació desigual</div>
+                    </div>
+                    <div class="scale-item" data-value="2">
+                        <div class="scale-header">
+                            <div class="level-icon level-2">2</div>
+                            <div class="level-title">En procés</div>
+                        </div>
+                        <div class="level-desc">Col·laboració bàsica però amb dificultats de coordinació</div>
+                    </div>
+                    <div class="scale-item" data-value="3">
+                        <div class="scale-header">
+                            <div class="level-icon level-3">3</div>
+                            <div class="level-title">Assolit</div>
+                        </div>
+                        <div class="level-desc">Participació equilibrada i coordinació efectiva en el grup</div>
+                    </div>
+                    <div class="scale-item" data-value="4">
+                        <div class="scale-header">
+                            <div class="level-icon level-4">4</div>
+                            <div class="level-title">Excel·lent</div>
+                        </div>
+                        <div class="level-desc">Col·laboració excel·lent, distribució de tasques òptima i consens</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRITERI 4 -->
+            <div class="question">
+                <h3 class="required">Criteri 4: Qualitat del producte digital</h3>
+                <div class="scale-container" id="criteri4">
+                    <div class="scale-item" data-value="1">
+                        <div class="scale-header">
+                            <div class="level-icon level-1">1</div>
+                            <div class="level-title">No assolit</div>
+                        </div>
+                        <div class="level-desc">Taula desestructurada, errors visuals greus</div>
+                    </div>
+                    <div class="scale-item" data-value="2">
+                        <div class="scale-header">
+                            <div class="level-icon level-2">2</div>
+                            <div class="level-title">En procés</div>
+                        </div>
+                        <div class="level-desc">Estructura bàsica però poc clara o atractiva visualment</div>
+                    </div>
+                    <div class="scale-item" data-value="3">
+                        <div class="scale-header">
+                            <div class="level-icon level-3">3</div>
+                            <div class="level-title">Assolit</div>
+                        </div>
+                        <div class="level-desc">Taula ben organitzada, clara i visualment acceptable</div>
+                    </div>
+                    <div class="scale-item" data-value="4">
+                        <div class="scale-header">
+                            <div class="level-icon level-4">4</div>
+                            <div class="level-title">Excel·lent</div>
+                        </div>
+                        <div class="level-desc">Producte professional, visualment atractiu, ben estructurat</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRITERI 5 -->
+            <div class="question">
+                <h3 class="required">Criteri 5: Argumentació i conclusions pràctiques</h3>
+                <div class="scale-container" id="criteri5">
+                    <div class="scale-item" data-value="1">
+                        <div class="scale-header">
+                            <div class="level-icon level-1">1</div>
+                            <div class="level-title">No assolit</div>
+                        </div>
+                        <div class="level-desc">Conclusió absenta o sense relació amb l'anàlisi</div>
+                    </div>
+                    <div class="scale-item" data-value="2">
+                        <div class="scale-header">
+                            <div class="level-icon level-2">2</div>
+                            <div class="level-title">En procés</div>
+                        </div>
+                        <div class="level-desc">Conclusió genèrica, sense identificació clara de riscos/oportunitats</div>
+                    </div>
+                    <div class="scale-item" data-value="3">
+                        <div class="scale-header">
+                            <div class="level-icon level-3">3</div>
+                            <div class="level-title">Assolit</div>
+                        </div>
+                        <div class="level-desc">Conclusió adequada que identifica els principals punts de negociació</div>
+                    </div>
+                    <div class="scale-item" data-value="4">
+                        <div class="scale-header">
+                            <div class="level-icon level-4">4</div>
+                            <div class="level-title">Excel·lent</div>
+                        </div>
+                        <div class="level-desc">Conclusió sòlida, amb identificació de riscos legals i recomanacions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SECCIÓ 3: FEEDBACK PERSONALITZAT -->
+        <div class="section">
+            <div class="section-title">
+                <i>💬</i> Feedback Personalitzat (per omplir pel professor)
+            </div>
+            
+            <div class="question">
+                <h3>6. Punts forts observats en el treball</h3>
+                <textarea id="puntsforts" placeholder="Descriu els aspectes positius més destacats..."></textarea>
+            </div>
+            
+            <div class="question">
+                <h3>7. Aspectes a millorar per a futures activitats</h3>
+                <textarea id="amillorar" placeholder="Indica les àrees d'oportunitat i com millorar-les..."></textarea>
+            </div>
+            
+            <div class="question">
+                <h3>8. Recomanació específica per a la preparació laboral</h3>
+                <p>💡 <em>Aquest feedback connecta directament amb la teva futura cerca de feina (Àrea 2)</em></p>
+                <textarea id="recomanacio" placeholder="Connexió amb la futura cerca de feina i desenvolupament professional..."></textarea>
+            </div>
+        </div>
+        
+        <!-- SECCIÓ 4: REFLEXIÓ FINAL -->
+        <div class="section">
+            <div class="section-title">
+                <i>🧠</i> Reflexió Final de l'Estudiant
+            </div>
+            
+            <div class="question">
+                <h3 class="required">9. Què has après d'aquesta activitat sobre els teus drets laborals?</h3>
+                <p><em>Reflexiona sobre el teu aprenentatge i com et pots aplicar aquest coneixement en la cerca de feina futura</em></p>
+                <textarea id="aprenentatge" placeholder="Escriu aquí la teva reflexió..." required></textarea>
+            </div>
+            
+            <div class="question">
+                <h3 class="required">10. Eina digital més útil</h3>
+                <p><em>De les eines digitals utilitzades (HTML, Canva Docs, Google Classroom), quina has trobat més útil per al treball col·laboratiu i per què?</em></p>
+                <textarea id="einautil" placeholder="Compara les eines i justifica la teva elecció..." required></textarea>
+            </div>
+        </div>
+        
+        <!-- ÀREA DE RESULTATS -->
+        <div class="results-container" id="resultsArea">
+            <div class="results-header">
+                <div class="results-icon">📈</div>
+                <div>
+                    <div class="results-title" id="resultsTitle">Resultat de l'Avaluació</div>
+                    <p style="color: #666; margin-top: 5px;">Avaluació processada correctament</p>
+                </div>
+            </div>
+            
+            <!-- ESTAT D'ENVIAMENT -->
+            <div class="sending-status" id="sendingStatus">
+                <p style="font-size: 18px; font-weight: 600;">📤 Simulant enviament a la base de dades...</p>
+                <p style="margin-top: 10px;">Les dades s'han guardat localment i estan disponibles per a descarregar</p>
+            </div>
+            
+            <!-- PUNTUACIÓ -->
+            <div class="score-display" id="scoreDisplay">
+                <div class="score-number" id="scoreNumber">0/20</div>
+                <div class="score-text" id="scoreText">Puntuació total</div>
+                <div style="margin-top: 15px; font-size: 18px;" id="nivellText"></div>
+            </div>
+            
+            <!-- MISSATGE DE FEEDBACK -->
+            <div id="feedbackMessage"></div>
+            
+            <!-- RESUM DELS CRITERIS -->
+            <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px;">
+                <strong style="font-size: 18px;">📋 Resum dels criteris avaluats:</strong>
+                <div id="criterisResum" style="margin-top: 15px;"></div>
+            </div>
+            
+            <!-- BOTONS D'ACCIÓ -->
+            <div class="action-buttons">
+                <button class="action-btn btn-pdf" id="downloadPdfBtn">
+                    <span style="margin-right: 10px;">📥</span> Descarregar PDF
+                </button>
+                <button class="action-btn btn-json" id="showJsonBtn">
+                    <span style="margin-right: 10px;">📊</span> Mostrar JSON
+                </button>
+                <button class="action-btn btn-send" id="sendToServerBtn">
+                    <span style="margin-right: 10px;">📤</span> Enviar a servidor (simulat)
+                </button>
+            </div>
+            
+            <!-- JSON OUTPUT -->
+            <div class="json-output" id="jsonOutput" style="display: none;"></div>
+        </div>
+        
+        <!-- BOTONS INFERIORS -->
+        <div class="buttons">
+            <button class="btn btn-reset" id="resetBtn">
+                <span style="margin-right: 8px;">🗑️</span> Esborrar tot
+            </button>
+            <button class="btn btn-send" id="submitBtn">
+                <span style="margin-right: 8px;">✅</span> Enviar Avaluació
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // VARIABLES GLOBALS
+        let avaluacioData = {};
+        let totalScore = 0;
+        
+        // SELECCIÓ D'ESCALES
+        document.querySelectorAll('.scale-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const container = this.closest('.scale-container');
+                container.querySelectorAll('.scale-item').forEach(i => {
+                    i.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+        
+        // FUNCIÓ PER CALCULAR PUNTUACIÓ I RECOLLIR DADES
+        function calcularPuntuacio() {
+            totalScore = 0;
+            avaluacioData = {
+                timestamp: new Date().toISOString(),
+                dadesEstudiant: {},
+                rúbrica: {},
+                feedback: {},
+                reflexio: {},
+                resultats: {}
+            };
+            
+            // Dades de l'estudiant
+            avaluacioData.dadesEstudiant = {
+                nom: document.getElementById('nom').value,
+                grup: document.getElementById('grup').value,
+                enllacCanva: document.getElementById('enllac').value,
+                autovaloracioDigital: document.getElementById('autovaloracio').value
+            };
+            
+            // Rúbrica
+            const criteris = ['criteri1', 'criteri2', 'criteri3', 'criteri4', 'criteri5'];
+            const criterisNoms = [
+                'Anàlisi i contrast de condicions laborals',
+                'Rigor en la identificació normativa',
+                'Col·laboració i treball en equip',
+                'Qualitat del producte digital',
+                'Argumentació i conclusions pràctiques'
+            ];
+            
+            let criterisText = '';
+            
+            criteris.forEach((id, index) => {
+                const container = document.getElementById(id);
+                const selected = container.querySelector('.scale-item.selected');
+                if (selected) {
+                    const score = parseInt(selected.getAttribute('data-value'));
+                    totalScore += score;
+                    const levelText = selected.querySelector('.level-title').textContent;
+                    
+                    avaluacioData.rúbrica[criterisNoms[index]] = {
+                        puntuacio: score,
+                        nivell: levelText,
+                        descripcio: selected.querySelector('.level-desc').textContent
+                    };
+                    
+                    criterisText += `<div style="margin: 10px 0; padding: 12px; background: ${getColorForScore(score)}; border-radius: 6px; color: white;">
+                        <strong>${criterisNoms[index]}:</strong> ${levelText} (${score}/4)
+                    </div>`;
+                }
+            });
+            
+            // Feedback personalitzat
+            avaluacioData.feedback = {
+                puntsForts: document.getElementById('puntsforts').value,
+                aspectesMillorar: document.getElementById('amillorar').value,
+                recomanacioLaboral: document.getElementById('recomanacio').value
+            };
+            
+            // Reflexió final
+            avaluacioData.reflexio = {
+                aprenentatge: document.getElementById('aprenentatge').value,
+                einaUtil: document.getElementById('einautil').value
+            };
+            
+            // Resultats
+            let nivell, nivellText, nivellColor;
+            
+            if (totalScore >= 16) {
+                nivell = "Excel·lent";
+                nivellText = "🎉 <strong>Excel·lent!</strong> Domini complet de l'anàlisi laboral i treball col·laboratiu.";
+                nivellColor = "#27ae60";
+            } else if (totalScore >= 11) {
+                nivell = "Assolit";
+                nivellText = "✅ <strong>Assolit.</strong> Objectius bàsics aconseguits amb possibilitats de millora.";
+                nivellColor = "#3498db";
+            } else if (totalScore >= 6) {
+                nivell = "En procés";
+                nivellText = "🔄 <strong>En procés.</strong> Dificultats detectades, cal revisar i practicar.";
+                nivellColor = "#f39c12";
+            } else {
+                nivell = "No assolit";
+                nivellText = "🛑 <strong>No assolit.</strong> Cal repassar conceptes bàsics i demanar ajuda.";
+                nivellColor = "#e74c3c";
+            }
+            
+            avaluacioData.resultats = {
+                puntuacioTotal: totalScore,
+                nivell: nivell,
+                color: nivellColor,
+                missatge: nivellText.replace(/<[^>]*>/g, '')
+            };
+            
+            return { totalScore, criterisText, nivell, nivellText, nivellColor };
+        }
+        
+        // FUNCIÓ PER OBTENIR COLOR SEGONS PUNTUACIÓ
+        function getColorForScore(score) {
+            switch(score) {
+                case 1: return "#e74c3c";
+                case 2: return "#f39c12";
+                case 3: return "#2ecc71";
+                case 4: return "#3498db";
+                default: return "#95a5a6";
+            }
+        }
+        
+        // ENVIAMENT DEL FORMULARI
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            // Valida camps obligatoris
+            const requiredFields = [
+                'nom', 'grup', 'enllac', 'aprenentatge', 'einautil'
+            ];
+            
+            let valid = true;
+            requiredFields.forEach(id => {
+                const field = document.getElementById(id);
+                if (!field.value.trim()) {
+                    valid = false;
+                    field.style.borderColor = '#e74c3c';
+                } else {
+                    field.style.borderColor = '#e1e8ed';
+                }
+            });
+            
+            // Valida que tots els criteris estiguin seleccionats
+            const criteris = ['criteri1', 'criteri2', 'criteri3', 'criteri4', 'criteri5'];
+            let criterisComplets = true;
+            
+            criteris.forEach(id => {
+                const container = document.getElementById(id);
+                const selected = container.querySelector('.scale-item.selected');
+                if (!selected) {
+                    criterisComplets = false;
+                    container.style.border = '2px solid #e74c3c';
+                    container.style.borderRadius = '8px';
+                    container.style.padding = '5px';
+                } else {
+                    container.style.border = 'none';
+                    container.style.padding = '0';
+                }
+            });
+            
+            if (!valid || !criterisComplets) {
+                alert('⚠️ Si us plau, omple tots els camps obligatoris i selecciona un nivell per a cada criteri.');
+                return;
+            }
+            
+            // Calcula puntuació
+            const { totalScore, criterisText, nivell, nivellText, nivellColor } = calcularPuntuacio();
+            
+            // Mostra l'àrea de resultats
+            document.getElementById('resultsArea').style.display = 'block';
+            
+            // Mostra estat d'enviament
+            document.getElementById('sendingStatus').style.display = 'block';
+            
+            // Actualitza resultats
+            document.getElementById('scoreNumber').textContent = `${totalScore}/20`;
+            document.getElementById('scoreNumber').style.color = nivellColor;
+            document.getElementById('scoreText').textContent = `Puntuació total (${totalScore}/20)`;
+            document.getElementById('nivellText').innerHTML = nivellText;
+            document.getElementById('nivellText').style.color = nivellColor;
+            
+            document.getElementById('criterisResum').innerHTML = criterisText;
+            
+            // Missatge de feedback
+            document.getElementById('feedbackMessage').innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 10px; border-left: 5px solid ${nivellColor}; margin: 20px 0;">
+                    <strong style="color: ${nivellColor}; font-size: 18px;">${nivell}</strong>
+                    <p style="margin-top: 10px;">${avaluacioData.resultats.missatge}</p>
+                </div>
+            `;
+            
+            // Amaga estat d'enviament després de 2 segons
+            setTimeout(() => {
+                document.getElementById('sendingStatus').style.display = 'none';
+            }, 2000);
+            
+            // Scroll suau cap als resultats
+            document.getElementById('resultsArea').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            console.log('📤 Avaluació processada:', avaluacioData);
+        });
+        
+        // DESCARREGAR PDF
+        document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+            if (totalScore === 0) {
+                alert('⚠️ Primer cal enviar l\'avaluació per generar el PDF.');
+                return;
+            }
+            
+            // Crear PDF amb jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Títol
+            doc.setFontSize(20);
+            doc.setTextColor(44, 62, 80);
+            doc.text("Informe d'Avaluació", 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Microactivitat: 'De l'oferta al conveni'", 105, 30, { align: 'center' });
+            doc.text("Professor: Diego Izquierdo Perán", 105, 35, { align: 'center' });
+            doc.text(`Data: ${new Date().toLocaleDateString('ca-ES')}`, 105, 40, { align: 'center' });
+            
+            // Dades de l'estudiant
+            doc.setFontSize(14);
+            doc.setTextColor(52, 152, 219);
+            doc.text("DADES DE L'ESTUDIANT", 20, 55);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Nom: ${avaluacioData.dadesEstudiant.nom}`, 20, 65);
+            doc.text(`Grup: ${avaluacioData.dadesEstudiant.grup}`, 20, 72);
+            doc.text(`Enllaç Canva: ${avaluacioData.dadesEstudiant.enllacCanva}`, 20, 79);
+            
+            // Rúbrica
+            doc.setFontSize(14);
+            doc.setTextColor(52, 152, 219);
+            doc.text("RÚBRICA D'AVALUACIÓ", 20, 95);
+            
+            let yPos = 105;
+            Object.entries(avaluacioData.rúbrica).forEach(([criteri, data], index) => {
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`${index + 1}. ${criteri}`, 20, yPos);
+                doc.text(`Puntuació: ${data.puntuacio}/4 - Nivell: ${data.nivell}`, 30, yPos + 7);
+                yPos += 15;
+            });
+            
+            // Resultats
+            doc.setFontSize(14);
+            doc.setTextColor(52, 152, 219);
+            doc.text("RESULTATS FINALS", 20, yPos + 10);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(avaluacioData.resultats.color.replace('#', ''));
+            doc.text(`PUNTUACIÓ TOTAL: ${totalScore}/20`, 105, yPos + 25, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`NIVELL: ${avaluacioData.resultats.nivell}`, 105, yPos + 35, { align: 'center' });
+            
+            // Peu de pàgina
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Avaluació generada digitalment - Competència Digital Docent Nivell B2", 105, 280, { align: 'center' });
+            
+            // Descarregar PDF
+            doc.save(`avaluacio_${avaluacioData.dadesEstudiant.nom.replace(/\s+/g, '_')}.pdf`);
+            
+            alert('✅ PDF descarregat correctament!');
+        });
+        
+        // MOSTRAR JSON
+        document.getElementById('showJsonBtn').addEventListener('click', function() {
+            if (totalScore === 0) {
+                alert('⚠️ Primer cal enviar l\'avaluació per generar el JSON.');
+                return;
+            }
+            
+            const jsonOutput = document.getElementById('jsonOutput');
+            jsonOutput.textContent = JSON.stringify(avaluacioData, null, 2);
+            jsonOutput.style.display = 'block';
+            
+            // Scroll al JSON
+            jsonOutput.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // ENVIAR A SERVIDOR (SIMULAT)
+        document.getElementById('sendToServerBtn').addEventListener('click', function() {
+            if (totalScore === 0) {
+                alert('⚠️ Primer cal enviar l\'avaluació per simular l\'enviament.');
+                return;
+            }
+            
+            // Mostra estat d'enviament
+            const sendBtn = document.getElementById('sendToServerBtn');
+            const originalText = sendBtn.innerHTML;
+            
+            sendBtn.innerHTML = '<span style="margin-right: 10px;">⏳</span> Enviant...';
+            sendBtn.disabled = true;
+            
+            // Simula enviament
+            setTimeout(() => {
+                sendBtn.innerHTML = '<span style="margin-right: 10px;">✅</span> Enviat!';
+                sendBtn.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+                
+                // Simula resposta del servidor
+                console.log('📡 Dades enviades al servidor (simulat):', {
+                    estatus: 'success',
+                    missatge: 'Avaluació guardada a la base de dades',
+                    id: 'AV_' + Date.now(),
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Restaura botó després de 3 segons
+                setTimeout(() => {
+                    sendBtn.innerHTML = originalText;
+                    sendBtn.disabled = false;
+                    sendBtn.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)';
+                }, 3000);
+            }, 2000);
+        });
+        
+        // ESBORRAR TOT
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            if (confirm('⚠️ Vols esborrar totes les respostes?')) {
+                // Esborra camps
+                document.querySelectorAll('input[type="text"], input[type="url"], textarea, select').forEach(field => {
+                    field.value = '';
+                    field.style.borderColor = '#e1e8ed';
+                });
+                
+                // Esborra seleccions
+                document.querySelectorAll('.scale-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Esborra estils
+                document.querySelectorAll('.scale-container').forEach(container => {
+                    container.style.border = 'none';
+                    container.style.padding = '0';
+                });
+                
+                // Amaga resultats
+                document.getElementById('resultsArea').style.display = 'none';
+                document.getElementById('jsonOutput').style.display = 'none';
+                
+                // Reseteja variables
+                totalScore = 0;
+                avaluacioData = {};
+                
+                alert('🗑️ Totes les respostes s\'han esborrat.');
+            }
+        });
+        
+        // VALIDACIÓ EN TEMPS REAL
+        document.querySelectorAll('input, textarea').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = '#2ecc71';
+                    setTimeout(() => {
+                        this.style.borderColor = '#e1e8ed';
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
